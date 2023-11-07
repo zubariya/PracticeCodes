@@ -93,70 +93,6 @@ public final class PetController extends BaseController {
     }
 
     /**
-     * Updates a pet in the store with form data.
-     * @param  petId  Required parameter: ID of pet that needs to be updated
-     * @param  name  Optional parameter: Updated name of the pet
-     * @param  status  Optional parameter: Updated status of the pet
-     * @throws    ApiException    Represents error response from the server.
-     * @throws    IOException    Signals that an I/O exception of some sort has occurred.
-     */
-    public void updatePetWithForm(
-            final long petId,
-            final String name,
-            final String status) throws ApiException, IOException {
-        prepareUpdatePetWithFormRequest(petId, name, status).execute();
-    }
-
-    /**
-     * Updates a pet in the store with form data.
-     * @param  petId  Required parameter: ID of pet that needs to be updated
-     * @param  name  Optional parameter: Updated name of the pet
-     * @param  status  Optional parameter: Updated status of the pet
-     * @return    Returns the void response from the API call
-     */
-    public CompletableFuture<Void> updatePetWithFormAsync(
-            final long petId,
-            final String name,
-            final String status) {
-        try { 
-            return prepareUpdatePetWithFormRequest(petId, name, status).executeAsync(); 
-        } catch (Exception e) {  
-            throw new CompletionException(e); 
-        }
-    }
-
-    /**
-     * Builds the ApiCall object for updatePetWithForm.
-     */
-    private ApiCall<Void, ApiException> prepareUpdatePetWithFormRequest(
-            final long petId,
-            final String name,
-            final String status) throws IOException {
-        return new ApiCall.Builder<Void, ApiException>()
-                .globalConfig(getGlobalConfiguration())
-                .requestBuilder(requestBuilder -> requestBuilder
-                        .server(Server.SERVER1.value())
-                        .path("/pet/{petId}")
-                        .formParam(param -> param.key("name")
-                                .value(name).isRequired(false))
-                        .formParam(param -> param.key("status")
-                                .value(status).isRequired(false))
-                        .templateParam(param -> param.key("petId").value(petId).isRequired(false)
-                                .shouldEncode(true))
-                        .headerParam(param -> param.key("Content-Type")
-                                .value("application/x-www-form-urlencoded").isRequired(false))
-                        .authenticationKey(BaseController.AUTHENTICATION_KEY)
-                        .httpMethod(HttpMethod.POST))
-                .responseHandler(responseHandler -> responseHandler
-                        .nullify404(false)
-                        .localErrorCase("405",
-                                 ErrorCase.setReason("Invalid input",
-                                (reason, context) -> new ApiException(reason, context)))
-                        .globalErrorCase(GLOBAL_ERROR_CASES))
-                .build();
-    }
-
-    /**
      * Deletes a pet.
      * @param  petId  Required parameter: Pet id to delete
      * @param  apiKey  Optional parameter: Example:
@@ -209,6 +145,56 @@ public final class PetController extends BaseController {
                                 (reason, context) -> new ApiException(reason, context)))
                         .localErrorCase("404",
                                  ErrorCase.setReason("Pet not found",
+                                (reason, context) -> new ApiException(reason, context)))
+                        .globalErrorCase(GLOBAL_ERROR_CASES))
+                .build();
+    }
+
+    /**
+     * Add a new pet to the store.
+     * @param  body  Required parameter: Pet object that needs to be added to the store
+     * @throws    ApiException    Represents error response from the server.
+     * @throws    IOException    Signals that an I/O exception of some sort has occurred.
+     */
+    public void addPet(
+            final Pet body) throws ApiException, IOException {
+        prepareAddPetRequest(body).execute();
+    }
+
+    /**
+     * Add a new pet to the store.
+     * @param  body  Required parameter: Pet object that needs to be added to the store
+     * @return    Returns the void response from the API call
+     */
+    public CompletableFuture<Void> addPetAsync(
+            final Pet body) {
+        try { 
+            return prepareAddPetRequest(body).executeAsync(); 
+        } catch (Exception e) {  
+            throw new CompletionException(e); 
+        }
+    }
+
+    /**
+     * Builds the ApiCall object for addPet.
+     */
+    private ApiCall<Void, ApiException> prepareAddPetRequest(
+            final Pet body) throws JsonProcessingException, IOException {
+        return new ApiCall.Builder<Void, ApiException>()
+                .globalConfig(getGlobalConfiguration())
+                .requestBuilder(requestBuilder -> requestBuilder
+                        .server(Server.SERVER1.value())
+                        .path("/pet")
+                        .bodyParam(param -> param.value(body))
+                        .bodySerializer(() ->  ApiHelper.serialize(body))
+                        .headerParam(param -> param.key("Content-Type")
+                                .value("application/json").isRequired(false))
+                        .authenticationKey(BaseController.AUTHENTICATION_KEY)
+                        .httpMethod(HttpMethod.POST))
+                .responseHandler(responseHandler -> responseHandler
+                        .nullify404(false)
+                        .localErrorCase("405",
+                                 ErrorCase.setReason("Invalid input",
                                 (reason, context) -> new ApiException(reason, context)))
                         .globalErrorCase(GLOBAL_ERROR_CASES))
                 .build();
@@ -280,44 +266,58 @@ public final class PetController extends BaseController {
     }
 
     /**
-     * Add a new pet to the store.
-     * @param  body  Required parameter: Pet object that needs to be added to the store
+     * Updates a pet in the store with form data.
+     * @param  petId  Required parameter: ID of pet that needs to be updated
+     * @param  name  Optional parameter: Updated name of the pet
+     * @param  status  Optional parameter: Updated status of the pet
      * @throws    ApiException    Represents error response from the server.
      * @throws    IOException    Signals that an I/O exception of some sort has occurred.
      */
-    public void addPet(
-            final Pet body) throws ApiException, IOException {
-        prepareAddPetRequest(body).execute();
+    public void updatePetWithForm(
+            final long petId,
+            final String name,
+            final String status) throws ApiException, IOException {
+        prepareUpdatePetWithFormRequest(petId, name, status).execute();
     }
 
     /**
-     * Add a new pet to the store.
-     * @param  body  Required parameter: Pet object that needs to be added to the store
+     * Updates a pet in the store with form data.
+     * @param  petId  Required parameter: ID of pet that needs to be updated
+     * @param  name  Optional parameter: Updated name of the pet
+     * @param  status  Optional parameter: Updated status of the pet
      * @return    Returns the void response from the API call
      */
-    public CompletableFuture<Void> addPetAsync(
-            final Pet body) {
+    public CompletableFuture<Void> updatePetWithFormAsync(
+            final long petId,
+            final String name,
+            final String status) {
         try { 
-            return prepareAddPetRequest(body).executeAsync(); 
+            return prepareUpdatePetWithFormRequest(petId, name, status).executeAsync(); 
         } catch (Exception e) {  
             throw new CompletionException(e); 
         }
     }
 
     /**
-     * Builds the ApiCall object for addPet.
+     * Builds the ApiCall object for updatePetWithForm.
      */
-    private ApiCall<Void, ApiException> prepareAddPetRequest(
-            final Pet body) throws JsonProcessingException, IOException {
+    private ApiCall<Void, ApiException> prepareUpdatePetWithFormRequest(
+            final long petId,
+            final String name,
+            final String status) throws IOException {
         return new ApiCall.Builder<Void, ApiException>()
                 .globalConfig(getGlobalConfiguration())
                 .requestBuilder(requestBuilder -> requestBuilder
                         .server(Server.SERVER1.value())
-                        .path("/pet")
-                        .bodyParam(param -> param.value(body))
-                        .bodySerializer(() ->  ApiHelper.serialize(body))
+                        .path("/pet/{petId}")
+                        .formParam(param -> param.key("name")
+                                .value(name).isRequired(false))
+                        .formParam(param -> param.key("status")
+                                .value(status).isRequired(false))
+                        .templateParam(param -> param.key("petId").value(petId).isRequired(false)
+                                .shouldEncode(true))
                         .headerParam(param -> param.key("Content-Type")
-                                .value("application/json").isRequired(false))
+                                .value("application/x-www-form-urlencoded").isRequired(false))
                         .authenticationKey(BaseController.AUTHENTICATION_KEY)
                         .httpMethod(HttpMethod.POST))
                 .responseHandler(responseHandler -> responseHandler

@@ -15,10 +15,10 @@ PetController petController = client.getPetController();
 ## Methods
 
 * [Get Pet by Id](../../doc/controllers/pet.md#get-pet-by-id)
-* [Update Pet With Form](../../doc/controllers/pet.md#update-pet-with-form)
 * [Delete Pet](../../doc/controllers/pet.md#delete-pet)
-* [Upload File](../../doc/controllers/pet.md#upload-file)
 * [Add Pet](../../doc/controllers/pet.md#add-pet)
+* [Upload File](../../doc/controllers/pet.md#upload-file)
+* [Update Pet With Form](../../doc/controllers/pet.md#update-pet-with-form)
 * [Update Pet](../../doc/controllers/pet.md#update-pet)
 * [Find Pets by Status](../../doc/controllers/pet.md#find-pets-by-status)
 * [Find Pets by Tags](../../doc/controllers/pet.md#find-pets-by-tags)
@@ -66,51 +66,6 @@ petController.getPetByIdAsync(petId).thenAccept(result -> {
 | 404 | Pet not found | `ApiException` |
 
 
-# Update Pet With Form
-
-Updates a pet in the store with form data
-
-```java
-CompletableFuture<Void> updatePetWithFormAsync(
-    final long petId,
-    final String name,
-    final String status)
-```
-
-## Parameters
-
-| Parameter | Type | Tags | Description |
-|  --- | --- | --- | --- |
-| `petId` | `long` | Template, Required | ID of pet that needs to be updated |
-| `name` | `String` | Form, Optional | Updated name of the pet |
-| `status` | `String` | Form, Optional | Updated status of the pet |
-
-## Response Type
-
-`void`
-
-## Example Usage
-
-```java
-long petId = 152L;
-
-petController.updatePetWithFormAsync(petId, null, null).thenAccept(result -> {
-    // TODO success callback handler
-    System.out.println(result);
-}).exceptionally(exception -> {
-    // TODO failure callback handler
-    exception.printStackTrace();
-    return null;
-});
-```
-
-## Errors
-
-| HTTP Status Code | Error Description | Exception Class |
-|  --- | --- | --- |
-| 405 | Invalid input | `ApiException` |
-
-
 # Delete Pet
 
 Deletes a pet
@@ -155,6 +110,53 @@ petController.deletePetAsync(petId, null).thenAccept(result -> {
 | 404 | Pet not found | `ApiException` |
 
 
+# Add Pet
+
+Add a new pet to the store
+
+```java
+CompletableFuture<Void> addPetAsync(
+    final Pet body)
+```
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `body` | [`Pet`](../../doc/models/pet.md) | Body, Required | Pet object that needs to be added to the store |
+
+## Response Type
+
+`void`
+
+## Example Usage
+
+```java
+Pet body = new Pet.Builder(
+    "name6",
+    Arrays.asList(
+        "photoUrls1"
+    )
+)
+.build();
+
+petController.addPetAsync(body).thenAccept(result -> {
+    // TODO success callback handler
+    System.out.println(result);
+}).exceptionally(exception -> {
+    // TODO failure callback handler
+    exception.printStackTrace();
+    return null;
+});
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 405 | Invalid input | `ApiException` |
+
+
 # Upload File
 
 uploads an image
@@ -194,20 +196,24 @@ petController.uploadFileAsync(petId, null, null).thenAccept(result -> {
 ```
 
 
-# Add Pet
+# Update Pet With Form
 
-Add a new pet to the store
+Updates a pet in the store with form data
 
 ```java
-CompletableFuture<Void> addPetAsync(
-    final Pet body)
+CompletableFuture<Void> updatePetWithFormAsync(
+    final long petId,
+    final String name,
+    final String status)
 ```
 
 ## Parameters
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`Pet`](../../doc/models/pet.md) | Body, Required | Pet object that needs to be added to the store |
+| `petId` | `long` | Template, Required | ID of pet that needs to be updated |
+| `name` | `String` | Form, Optional | Updated name of the pet |
+| `status` | `String` | Form, Optional | Updated status of the pet |
 
 ## Response Type
 
@@ -216,15 +222,9 @@ CompletableFuture<Void> addPetAsync(
 ## Example Usage
 
 ```java
-Pet body = new Pet.Builder(
-    "name6",
-    Arrays.asList(
-        "photoUrls1"
-    )
-)
-.build();
+long petId = 152L;
 
-petController.addPetAsync(body).thenAccept(result -> {
+petController.updatePetWithFormAsync(petId, null, null).thenAccept(result -> {
     // TODO success callback handler
     System.out.println(result);
 }).exceptionally(exception -> {
